@@ -1,6 +1,6 @@
 class User:
     def __init__(self,name,pin,password):
-        self.name = name
+        self.name = name.title()  # Capitalizes first letter in name
         self.pin = pin
         self.password = password
     
@@ -36,10 +36,9 @@ class BankUser(User):
         super().__init__(name, pin, password)
         # self.balance = float(0)
         self.balance = 0
-        on_hold = False
 
     def show_balance(self):  
-        print(self.name , 'has an account balance of:',format(self.balance, '.2f'))  #formats balance to string with two decimal spaces
+        print(self.name , 'has an account balance of:','$' +(format(self.balance, '.2f')))  #formats balance to string with two decimal spaces
                                                         
     def deposit(self,amount):
         if amount < 0 :                            
@@ -55,7 +54,7 @@ class BankUser(User):
             self.balance = self.balance - amount
         else:
             print("You can not withdraw more than your balance.")
-            print("Current balance is",format(self.balance, '.2f'))  #formats balance to string with two decimal places
+            print("Current balance is",'$'+(format(self.balance, '.2f')))  #formats balance to string with two decimal places
 
     def transfer_money(self,amount,user):
         if amount < 0 :                         
@@ -93,7 +92,7 @@ class BankUser(User):
             if input_password == self.password:
                 self.balance = self.balance + amount
                 user.balance = user.balance - amount
-                print("Requested:",format(amount, '.2f'),'from',user.name)
+                print("Requested:",'$'+(format(amount, '.2f')),'from',user.name)
                 return True
             else:
                 print('Invalid password.  Transaction canceled')
@@ -107,8 +106,6 @@ class BankUser(User):
 user1 = BankUser('bob', 1234, 'password')
 user2 = BankUser('john', 4260, 'winwin')
 user1.show_balance()
- 
-
 user2.deposit(5000.533)
 user2.show_balance()
 user1.show_balance()
@@ -123,7 +120,7 @@ user2.show_balance()
 
 
 
-#         ### Driver code for task 3 ###
+#         ### Driver code for task 4 ###
 # bank1 = BankUser('Bob',1234,'password')
 # bank1.deposit(100)
 # # bank1.withdraw(50)
