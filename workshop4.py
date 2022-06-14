@@ -5,52 +5,95 @@ class User:
         self.password = password
     
     def change_name(self,name):
-        self.name = name
+        if 2 < len(name)< 10: 
+            self.name = name
+        else:
+            print('Name needs to be between 2-10 characters')
+            return False
         
-    def change_pin(self,pin):
-        self.pin = pin
+    def change_pin(self,new_pin):
+        if len(str(new_pin)) == 4:
+            if new_pin == self.pin:
+                print("New PIN cannot be the same as previous PIN number.")
+            else:
+                self.pin = new_pin
+        else:
+            print("Pin Must be 4 characters long")
+
 
     def change_password(self,password):
-        self.password = password
+        if 4 < len(password)< 12: 
+            if ' ' in password:
+                print('No spaces allowed in password.')
+            else:
+                self.password = password
+        else:
+            print('Password needs to be between 4-12 characters')
+         
 
 class BankUser(User):
     def __init__(self,name,pin,password):
         super().__init__(name, pin, password)
+        # self.balance = float(0)
         self.balance = 0
+        on_hold = False
 
-    def show_balance(self):  ### WHY DOESNT IT PRINT BALANCE
-        print(self.name , 'has an account balance of:',self.balance)
-    
+    def show_balance(self):  
+        print(self.name , 'has an account balance of:',format(self.balance, '.2f'))  #formats balance to string with two decimal spaces
+                                                        
     def deposit(self,amount):
+        if amount < 0 :                            
+            print("Error: Amount must be over 0 ")
+            return False
         self.balance = self.balance + amount
         
     def withdraw(self,amount):
+        if amount < 0 :                      
+            print("Error: Amount must be over 0 ")
+            return False
         if self.balance - amount > 0:
             self.balance = self.balance - amount
         else:
             print("You can not withdraw more than your balance.")
-            print("Current balance is",self.balance)
+            print("Current balance is",format(self.balance, '.2f'))  #formats balance to string with two decimal places
 
     def transfer_money(self,amount,user):
+        if amount < 0 :                         
+            print("Error: Amount must be over 0 ")
+            return False
+        
+        if amount > self.balance:
+            print("You cannot transfer more money than you have in your balance.")
+            return False
+
         print('Authorization Required to transfer money')
         inputted_pin = input(("Enter your pin: "))
         if int(inputted_pin) == self.pin:
             self.balance = self.balance - amount
             user.balance = user.balance + amount
             print('Transfer Authorized')
-            print('Transferring',amount,'to',user.name)
+            print('Transferring',format(amount, '.2f'),'to',user.name)  #formats the amount to to hundreds place
             return True
         else:
             print('Invalid Pin. Transaction canceled')
             return False
 
     def request_money(self,amount,user):
+        if amount < 0 :      
+            print("Error: Amount must be over 0 ")
+            return False
+
+        if amount > user.balance:
+            print("You cannot transfer more money than they have in their balance.")
+            return False
+
         inputted_pin = input(("Authorization is required to request money. Please enter your pin: "))
         if int(inputted_pin) == self.pin:
             input_password = input("Enter Password")
             if input_password == self.password:
                 self.balance = self.balance + amount
                 user.balance = user.balance - amount
+                print("Requested:",format(amount, '.2f'),'from',user.name)
                 return True
             else:
                 print('Invalid password.  Transaction canceled')
@@ -63,7 +106,10 @@ class BankUser(User):
     #### Driver Code for Task 5 ###
 user1 = BankUser('bob', 1234, 'password')
 user2 = BankUser('john', 4260, 'winwin')
-user2.deposit(5000)
+user1.show_balance()
+ 
+
+user2.deposit(5000.533)
 user2.show_balance()
 user1.show_balance()
 user2.transfer_money(500,user1)
